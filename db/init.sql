@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS comments (
   product_id INT,
   author VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   content TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  image VARCHAR(255) DEFAULT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
 );
@@ -39,4 +40,3 @@ INSERT INTO products (name, description, price) VALUES
 ('Blonde Houblonnée', 'Bière blonde avec un léger goût fruité', 3.60),
 ('Triple Artisanale', 'Bière triple forte et aromatique', 5.20),
 ('Porter Noire', 'Bière noire, arômes de chocolat et caramel', 4.70);
-;

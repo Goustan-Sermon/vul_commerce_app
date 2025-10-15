@@ -73,7 +73,11 @@ $comsRes = $mysqli->query("SELECT * FROM comments WHERE product_id = " . intval(
               <small style="color:#999;"><?php echo $c['created_at']; ?></small>
             </div>
             <div style="margin-top:8px;">
-              <?php echo $c['content']; ?>
+              <?php echo nl2br(htmlspecialchars($c['content'])); ?>
+              <?php if (!empty($c['image'])): ?>
+                <br>
+                <img src="uploads/<?php echo htmlspecialchars($c['image']); ?>" style="max-width:150px; margin-top:8px; border-radius:6px;">
+              <?php endif; ?>
             </div>
           </li>
         <?php endwhile; ?>
