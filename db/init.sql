@@ -18,5 +18,5 @@ CREATE TABLE IF NOT EXISTS comments (
 );
 
 INSERT INTO products (name, description, price) VALUES
-('T-shirt vuln', 'T-shirt demo', 19.90),
-('Casquette XSS', 'Casquette demo', 12.50);
+('Goudale', 'biere de malade qui titre a 6.7%', 4.50),
+('Kronenbourg', 'Biere de merde degueulasse', 0.10);

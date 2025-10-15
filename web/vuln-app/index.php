@@ -1,24 +1,38 @@
 <?php
-$servername = getenv("DB_HOST") ?: 'db';
-$username = getenv("DB_USER") ?: 'root';
-$password = getenv("DB_PASSWORD") ?: '';
-$dbname   = getenv("DB_NAME") ?: 'vulnshop';
+require 'db.php';
 
-if (!extension_loaded('mysqli')) {
-    die("Extension mysqli manquante. Vérifie que l'image PHP a bien mysqli installé.\n");
+$term = isset($_GET['q']) ? $_GET['q'] : '';
+
+if ($term !== '') {
+    $sql = "SELECT * FROM products WHERE name LIKE '%$term%' OR description LIKE '%$term%'";
+    $res = $mysqli->query($sql);
+} else {
+    $res = $mysqli->query("SELECT * FROM products LIMIT 10");
 }
-
-$mysqli = @new mysqli($servername, $username, $password, $dbname);
-
-if ($mysqli->connect_errno) {
-    echo "<h2>Connexion MySQL impossible</h2>";
-    echo "<p>Erreur ({$mysqli->connect_errno}): " . htmlspecialchars($mysqli->connect_error) . "</p>";
-    echo "<p>Hôte: " . htmlspecialchars($servername) . " — Utilisateur: " . htmlspecialchars($username) . " — BDD: " . htmlspecialchars($dbname) . "</p>";
-    exit;
-}
-
-echo "<h1>Bienvenue sur le site vulnérable !</h1>";
-echo "<p>Connexion MySQL réussie 🎉</p>";
-
-$mysqli->close();
 ?>
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Vuln Shop</title></head>
+<body>
+  <h1>Chop shop</h1>
+
+  <form method="get">
+    Recherche: <input name="q" value="<?php echo htmlspecialchars($term); ?>">
+    <button>Go</button>
+  </form>
+
+  <h2>Produits</h2>
+  <ul>
+  <?php while ($p = $res->fetch_assoc()): ?>
+    <li>
+      <a href="product.php?id=<?php echo $p['id']; ?>">
+        <?php echo htmlspecialchars($p['name']); ?>
+      </a>
+      — <?php echo htmlspecialchars($p['price']); ?>€
+    </li>
+  <?php endwhile; ?>
+  </ul>
+
+  <hr/>
+</body>
+</html>
