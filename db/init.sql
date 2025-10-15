@@ -17,6 +17,15 @@ CREATE TABLE IF NOT EXISTS comments (
   FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS admin_credentials (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  username VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  password VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
+);
+
+-- Flag
+INSERT INTO admin_credentials (username, password) VALUES
+('admin', 'Y2hvcHNob3BfYWRtaW5fcGFzc3dvcmRfMjAyNQ==');
 
 INSERT INTO products (name, description, price) VALUES
 ('Goudale', 'biere de malade qui titre a 6.7%', 4.50),

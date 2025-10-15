@@ -1,5 +1,5 @@
 <?php
-// product.php (stylé - vulnérable au Stored XSS volontairement)
+// product.php
 require 'db.php'; // connexion $mysqli
 
 // Récupère l'id du produit (par défaut 1)
@@ -36,11 +36,11 @@ $comsRes = $mysqli->query("SELECT * FROM comments WHERE product_id = " . intval(
   </nav>
 </header>
 
-<div class="container" style="grid-template-columns: 1fr; gap: 20px;">
+<div class="container" style="grid-template-columns: 1fr; gap: 20px; width: 600px">
   <!-- Product card -->
   <div class="product" style="display:flex; flex-direction:row; gap:20px; padding:20px;">
     <div style="flex:0 0 260px;">
-      <!-- Image placeholder (remplace par une vraie image si tu veux) -->
+      <!-- Image placeholder -->
       <div style="width:100%; height:220px; border-radius:10px; overflow:hidden; background:linear-gradient(135deg,#f6e3c3,#ffeccf); display:flex; align-items:center; justify-content:center;">
         <div style="text-align:center; color:#8b5e3c;">
           <div style="font-weight:700; font-size:1.1rem;">Image</div>
@@ -73,10 +73,6 @@ $comsRes = $mysqli->query("SELECT * FROM comments WHERE product_id = " . intval(
               <small style="color:#999;"><?php echo $c['created_at']; ?></small>
             </div>
             <div style="margin-top:8px;">
-              <!-- 
-                Stored XSS intentionally: we render content without htmlspecialchars
-                to keep the vulnerability for the lab.
-              -->
               <?php echo $c['content']; ?>
             </div>
           </li>
@@ -90,16 +86,16 @@ $comsRes = $mysqli->query("SELECT * FROM comments WHERE product_id = " . intval(
       <h4 style="margin-top:8px; color:#6b4226;">Ajouter un commentaire</h4>
       <form method="post" action="post_comment.php" enctype="multipart/form-data" style="margin-top:10px; display:flex; flex-direction:column; gap:10px;">
         <input type="hidden" name="product_id" value="<?php echo intval($product['id']); ?>">
-        <input name="author" placeholder="Ton nom" style="padding:10px; border-radius:8px; border:1px solid #ddd; width:40%; max-width:300px;">
-        <textarea name="content" placeholder="Ton commentaire (HTML autorisé pour la demo)" rows="4" style="padding:10px; border-radius:8px; border:1px solid #ddd; resize:vertical; max-width:100%;"></textarea>
+        <input name="author" placeholder="Nom..." style="padding:10px; border-radius:8px; border:1px solid #ddd; width:40%; max-width:300px;">
+        <textarea name="content" placeholder="Ajouter un commentaire..." rows="4" style="padding:10px; border-radius:8px; border:1px solid #ddd; resize:vertical; max-width:100%;"></textarea>
 
         <label style="font-size:0.9rem; color:#666;">Photo (optionnel) :</label>
         <input type="file" name="photo" accept="image/*, .xml" style="max-width:320px;">
-
+        
         <div style="display:flex; gap:10px; align-items:center;">
           <button type="submit" style="background:#8b5e3c; color:#fff; border:none; padding:10px 18px; border-radius:30px; font-weight:700; cursor:pointer;">Envoyer</button>
-          <small style="color:#999;">Tu peux uploader un XML pour la demo XXE (ne teste pas sur des cibles réelles)</small>
         </div>
+
       </form>
     </div>
   </div>
