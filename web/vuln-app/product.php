@@ -1,41 +1,112 @@
 <?php
-require 'db.php';
-$id = isset($_GET['id']) ? $_GET['id'] : '1';
+// product.php (stylé - vulnérable au Stored XSS volontairement)
+require 'db.php'; // connexion $mysqli
 
+// Récupère l'id du produit (par défaut 1)
+$id = isset($_GET['id']) ? intval($_GET['id']) : 1;
+
+// Récupère infos produit
 $productRes = $mysqli->query("SELECT * FROM products WHERE id = $id");
+if (!$productRes || $productRes->num_rows === 0) {
+    http_response_code(404);
+    echo "<!doctype html><html><head><meta charset='utf-8'><title>Produit introuvable</title><link rel='stylesheet' href='style.css'></head><body>";
+    echo "<header>Chop Shop</header><div class='container'><p>Produit introuvable. <a href='index.php'>Retour</a></p></div></body></html>";
+    exit;
+}
 $product = $productRes->fetch_assoc();
 
+// Récupère commentaires
 $comsRes = $mysqli->query("SELECT * FROM comments WHERE product_id = " . intval($product['id']) . " ORDER BY created_at DESC");
 ?>
 <!doctype html>
-<html>
-<head><meta charset="utf-8"><title><?php echo htmlspecialchars($product['name']); ?></title></head>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>Chop Shop — <?php echo htmlspecialchars($product['name']); ?></title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="styles.css">
+</head>
 <body>
-  <a href="index.php">← Accueil</a>
-  <h1><?php echo htmlspecialchars($product['name']); ?></h1>
-  <p><?php echo htmlspecialchars($product['description']); ?></p>
-  <p>Prix: <?php echo htmlspecialchars($product['price']); ?>€</p>
+<header>
+  Chop Shop
+  <nav>
+    <a href="index.php">Accueil</a>
+    <a href="#">Contact</a>
+    <a href="#">Panier</a>
+  </nav>
+</header>
 
-  <h2>Commentaires</h2>
-  <ul>
-  <?php while ($c = $comsRes->fetch_assoc()): ?>
-    <li>
-      <strong><?php echo htmlspecialchars($c['author']); ?></strong> —
-      <?php echo $c['content']; ?>
-      <small>(<?php echo $c['created_at']; ?>)</small>
-    </li>
-  <?php endwhile; ?>
-  </ul>
+<div class="container" style="grid-template-columns: 1fr; gap: 20px;">
+  <!-- Product card -->
+  <div class="product" style="display:flex; flex-direction:row; gap:20px; padding:20px;">
+    <div style="flex:0 0 260px;">
+      <!-- Image placeholder (remplace par une vraie image si tu veux) -->
+      <div style="width:100%; height:220px; border-radius:10px; overflow:hidden; background:linear-gradient(135deg,#f6e3c3,#ffeccf); display:flex; align-items:center; justify-content:center;">
+        <div style="text-align:center; color:#8b5e3c;">
+          <div style="font-weight:700; font-size:1.1rem;">Image</div>
+          <div style="font-size:0.9rem; margin-top:6px;"><?php echo htmlspecialchars($product['name']); ?></div>
+        </div>
+      </div>
+    </div>
 
-  <h3>Ajouter un commentaire</h3>
-  <form method="post" action="post_comment.php" enctype="multipart/form-data">
-    <input type="hidden" name="product_id" value="<?php echo intval($product['id']); ?>">
-    Auteur: <input name="author"><br/>
-    Commentaire:<br/>
-    <textarea name="content" cols="40" rows="4"></textarea><br/>
-    Photo (optionnel, accepte XML pour la demo XXE): <input type="file" name="photo"><br/>
-    <button>Envoyer</button>
-  </form>
-  <hr/>
+    <div class="product-content" style="flex:1; padding:0;">
+      <h2><?php echo htmlspecialchars($product['name']); ?></h2>
+      <p style="color:#666; margin-bottom:12px;"><?php echo htmlspecialchars($product['description']); ?></p>
+
+      <div style="display:flex; align-items:center; justify-content:space-between;">
+        <div class="price" style="font-size:1.4rem;"><?php echo htmlspecialchars(number_format($product['price'],2,',','')); ?>€</div>
+        <a href="index.php" style="text-decoration:none; color:#8b5e3c; font-weight:700;">← Retour</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Comments + form -->
+  <div style="grid-column: 1 / -1;">
+    <div style="background:#fff; padding:18px; border-radius:12px; box-shadow:0 5px 12px rgba(0,0,0,0.06);">
+      <h3 style="margin-bottom:12px; color:#6b4226;">Commentaires</h3>
+
+      <ul style="list-style:none; padding:0; margin:0 0 18px 0;">
+        <?php while ($c = $comsRes->fetch_assoc()): ?>
+          <li style="padding:12px; border-radius:8px; margin-bottom:10px; background:#fffbe6; box-shadow: 0 1px 4px rgba(0,0,0,0.04);">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <strong style="color:#6b4226;"><?php echo htmlspecialchars($c['author']); ?></strong>
+              <small style="color:#999;"><?php echo $c['created_at']; ?></small>
+            </div>
+            <div style="margin-top:8px;">
+              <!-- 
+                Stored XSS intentionally: we render content without htmlspecialchars
+                to keep the vulnerability for the lab.
+              -->
+              <?php echo $c['content']; ?>
+            </div>
+          </li>
+        <?php endwhile; ?>
+
+        <?php if ($comsRes->num_rows === 0): ?>
+          <li style="padding:12px; border-radius:8px; background:#fffbe6;">Aucun commentaire pour le moment.</li>
+        <?php endif; ?>
+      </ul>
+
+      <h4 style="margin-top:8px; color:#6b4226;">Ajouter un commentaire</h4>
+      <form method="post" action="post_comment.php" enctype="multipart/form-data" style="margin-top:10px; display:flex; flex-direction:column; gap:10px;">
+        <input type="hidden" name="product_id" value="<?php echo intval($product['id']); ?>">
+        <input name="author" placeholder="Ton nom" style="padding:10px; border-radius:8px; border:1px solid #ddd; width:40%; max-width:300px;">
+        <textarea name="content" placeholder="Ton commentaire (HTML autorisé pour la demo)" rows="4" style="padding:10px; border-radius:8px; border:1px solid #ddd; resize:vertical; max-width:100%;"></textarea>
+
+        <label style="font-size:0.9rem; color:#666;">Photo (optionnel) :</label>
+        <input type="file" name="photo" accept="image/*, .xml" style="max-width:320px;">
+
+        <div style="display:flex; gap:10px; align-items:center;">
+          <button type="submit" style="background:#8b5e3c; color:#fff; border:none; padding:10px 18px; border-radius:30px; font-weight:700; cursor:pointer;">Envoyer</button>
+          <small style="color:#999;">Tu peux uploader un XML pour la demo XXE (ne teste pas sur des cibles réelles)</small>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<footer>
+  &copy; <?php echo date('Y'); ?> Chop Shop — Bières artisanales & sélection
+</footer>
 </body>
 </html>
