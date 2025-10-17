@@ -18,6 +18,15 @@ CREATE TABLE IF NOT EXISTS comments (
   FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  email VARCHAR(255) NOT NULL UNIQUE,
+  password VARCHAR(255) NOT NULL,
+  username VARCHAR(100) DEFAULT NULL,
+  role ENUM('user','admin') NOT NULL DEFAULT 'user',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 CREATE TABLE IF NOT EXISTS admin_credentials (
   id INT AUTO_INCREMENT PRIMARY KEY,
   username VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
@@ -30,7 +39,7 @@ INSERT INTO admin_credentials (username, password) VALUES
 
 INSERT INTO products (name, description, price) VALUES
 ('Goudale', 'biere de malade qui titre a 6.7%', 4.50),
-('Kronenbourg', 'Biere de merde degueulasse', 0.10),
+('Kronenbourg', 'Biere pas ouf', 0.10),
 ('Lager Chop Shop', 'Bière blonde légère avec notes maltées', 3.50),
 ('IPA Hop Explosion', 'Bière ambrée très houblonnée', 4.20),
 ('Stout Nocturne', 'Bière noire, goût café et chocolat', 4.80),
@@ -41,24 +50,15 @@ INSERT INTO products (name, description, price) VALUES
 ('Triple Artisanale', 'Bière triple forte et aromatique', 5.20),
 ('Porter Noire', 'Bière noire, arômes de chocolat et caramel', 4.70);
 
-
-
-
-
-CREATE TABLE IF NOT EXISTS users (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  email VARCHAR(255) NOT NULL UNIQUE,
-  password VARCHAR(255) NOT NULL,
-  username VARCHAR(100) DEFAULT NULL,
-  role ENUM('user','admin') NOT NULL DEFAULT 'user',
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
--- Exemple pour créer un admin (remplace le hash si tu veux)
--- Génère un mot de passe avec PHP password_hash('tonpassword', PASSWORD_DEFAULT)
--- puis insère ici. Exemple avec 'adminpass' -> HASH A REMPLACER
 INSERT INTO users (email, password, username, role) VALUES (
   'admin@example.local',
   '$2y$10$pKPHauOpvKfFTZzR5e39e.VZAgsToWEa1oJr9FdEXpUDUF8/hHjUq',
   'admin',
   'admin'
 );
+
+
+
+
+
+
