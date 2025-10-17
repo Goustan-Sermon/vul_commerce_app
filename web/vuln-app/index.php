@@ -34,7 +34,7 @@
     $conn->set_charset("utf8mb4");
 
     $q = $_GET['q'] ?? '';
-    $sql = "SELECT * FROM products WHERE name LIKE '%$q%' OR description LIKE '%$q%' LIMIT 6";
+    $sql = "SELECT * FROM products WHERE name LIKE '%$q%' OR description LIKE '%$q%' LIMIT 3";
     $res = $conn->query($sql);
 
     while ($p = $res->fetch_assoc()):

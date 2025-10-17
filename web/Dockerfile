@@ -15,13 +15,18 @@ RUN a2enmod rewrite
 # Définir le répertoire de travail
 WORKDIR /var/www/html
 
-# Copier ton code (montage en dev peut remplacer ça)
+# Copie du code
 COPY vuln-app/ /var/www/html/
 
 # Création du dossier uploads avec permissions correctes
 RUN mkdir -p /var/www/html/uploads \
     && chown -R www-data:www-data /var/www/html/uploads \
     && chmod 755 /var/www/html/uploads
+
+# ajouter un flag lisible pour la démo XXE
+RUN echo 'Encode_FLAG{eHhlX2Nob3BzaG9wXzIwMjU=}' > /flag_xxe.txt \
+    && chown www-data:www-data /flag_xxe.txt \
+    && chmod 644 /flag_xxe.txt
 
 # Fix permissions sur le reste du code
 RUN chown -R www-data:www-data /var/www/html

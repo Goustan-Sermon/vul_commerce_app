@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS admin_credentials (
 
 -- Flag
 INSERT INTO admin_credentials (username, password) VALUES
-('admin', 'Y2hvcHNob3BfYWRtaW5fcGFzc3dvcmRfMjAyNQ==');
+('admin', 'Encode_FLAG{Y2hvcHNob3BfYWRtaW5fcGFzc3dvcmRfMjAyNQ==}');
 
 INSERT INTO products (name, description, price) VALUES
 ('Goudale', 'biere de malade qui titre a 6.7%', 4.50),
