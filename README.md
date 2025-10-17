@@ -12,7 +12,7 @@ Cette application e-commerce volontairement vulnérable est destinée à des exe
 - Dashboard admin (visuel / démonstration — pas d’actions sensibles en prod).  
 - Mécanismes pédagogiques pour détecter les failles (flag).
 
-## Structure du dépôt
+## Structure du depot
 
 ```
 .
@@ -36,8 +36,26 @@ Cette application e-commerce volontairement vulnérable est destinée à des exe
 │       └── uploads/ (généré)
 └── .env.example
 ```
+
+## Structure du réseau
+
+                        +------------------+
+                        |     vuln-net     |
+                        |     (bridge)     |
+                        +------------------+
+                          |      |      |
+                          |      |      |
+                          |      |      |
+              +-----------+      |      +--------------+
+              |                  |                     | 
+      +--------------+    +--------------+    +-----------------+
+      |   vuln-web   |    |              |    | vuln-phpmyadmin |
+      | (Apache+PHP) |    |    vuln-db   |    |   PHPMyAdmin    |
+      | Port 8080→80 |    |              |    |  Port 8081→80   |
+      +--------------+    +--------------+    +-----------------+
+      
 ## Installation & lancement 
-Cloner le projet et accéder au dépot
+Cloner le projet et accéder au depot
 ```bash
   git clone https://github.com/Goustan-Sermon/vul_commerce_app.git
   cd vul_commerce_app
@@ -69,9 +87,10 @@ docker compose up -d --build
 
 
 **Attention**
-Le service sur le port 8081 dépasse le champ du projet, aucune vulnérabilités n'est a trouver la bas. Tout se passe sur la page web uniquement.
 
-Si tu utilises WSL2 sur Windows ou une VM Linux, assure-toi que le daemon Docker est accessible depuis ton shell (Exemple pour Windows : s'assurer que docker desktop est en marche).
+• phpMyAdmin (port 8081) est fourni pour faciliter le debug ; il n’est pas concerné par le challenge — les vulnérabilités à analyser se trouvent uniquement sur l’interface web (port 8080).
+
+• Si vous utilisez WSL2/Windows, assurez-vous que Docker est actif et que votre shell a accès au daemon Docker.
 
 ## Réinitialiser la base de données
 
