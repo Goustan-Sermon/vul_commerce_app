@@ -40,3 +40,25 @@ INSERT INTO products (name, description, price) VALUES
 ('Blonde Houblonnée', 'Bière blonde avec un léger goût fruité', 3.60),
 ('Triple Artisanale', 'Bière triple forte et aromatique', 5.20),
 ('Porter Noire', 'Bière noire, arômes de chocolat et caramel', 4.70);
+
+
+
+
+
+CREATE TABLE IF NOT EXISTS users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  email VARCHAR(255) NOT NULL UNIQUE,
+  password VARCHAR(255) NOT NULL,
+  username VARCHAR(100) DEFAULT NULL,
+  role ENUM('user','admin') NOT NULL DEFAULT 'user',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+-- Exemple pour créer un admin (remplace le hash si tu veux)
+-- Génère un mot de passe avec PHP password_hash('tonpassword', PASSWORD_DEFAULT)
+-- puis insère ici. Exemple avec 'adminpass' -> HASH A REMPLACER
+INSERT INTO users (email, password, username, role) VALUES (
+  'admin@example.local',
+  '$2y$10$pKPHauOpvKfFTZzR5e39e.VZAgsToWEa1oJr9FdEXpUDUF8/hHjUq',
+  'admin',
+  'admin'
+);

@@ -19,29 +19,45 @@ body {
 header {
     background-color: #8b5e3c;
     color: #fff;
-    padding: 25px 0;
-    text-align: center;
+    padding: 25px 20px;
     font-size: 2.2em;
     font-weight: 700;
     letter-spacing: 1px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+
+    display: flex;
+    /* Flex container */
+    align-items: center;
+    /* Centrage vertical */
+    justify-content: space-between;
+    /* Écarte gauche/droite */
+    flex-wrap: wrap;
+    /* Si l’écran est petit */
 }
 
-header nav {
-    margin-top: 10px;
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    /* espace entre logo et nav */
 }
 
-header nav a {
+.header-left nav a,
+.header-right a {
+    font-size: 0.6em;
+    /* tu peux ajuster selon ton style */
     color: #fff;
     text-decoration: none;
-    margin: 0 15px;
+    margin: 0 10px;
     font-weight: 500;
     transition: color 0.3s;
 }
 
-header nav a:hover {
+.header-left nav a:hover,
+.header-right a:hover {
     color: #ffd700;
 }
+
 
 .container {
   flex: 1;

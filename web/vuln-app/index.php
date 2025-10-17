@@ -7,11 +7,16 @@
 </head>
 <body>
 <header>
-    Chop Shop
-    <nav>
-        <a href="index.php">Accueil</a>
-        <a href="#">Contact</a>
-        <a href="#">Panier</a>
+    <div class="header-left">
+        <span class="logo">Chop Shop</span>
+        <nav>
+            <a href="index.php">Accueil</a>
+            <a href="#">Contact</a>
+            <a href="#">Panier</a>
+        </nav>
+    </div>
+    <nav class="header-right">
+        <a href="login.php">Se connecter</a>
     </nav>
 </header>
 
