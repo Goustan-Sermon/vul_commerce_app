@@ -1,39 +1,70 @@
-# Chop Shop — labo vulnérable (README.md)
+# Chop Shop — Site de vente de bière
+**Chop Shop** est un projet pédagogique créé dans le cadre scolaire pour illustrer des vulnérabilités web courantes.  
+Cette application e-commerce volontairement vulnérable est destinée à des exercices pratiques.  
+**Usage : uniquement en labo isolé / réseau local. Ne jamais exposer ce projet en production.**
 
-> **Important — usage pédagogique uniquement**  
-> Cette application contient volontairement des vulnérabilités (SQLi, stored XSS, XXE). **N’exécute ceci que dans un environnement local et isolé.** Ne déploie jamais cette version sur Internet.
+## Fonctionnalités clés
 
----
-
-## Sommaire
-
-- [But du projet](#but-du-projet)  
-- [Structure du dépôt](#structure-du-dépôt)  
-- [Ne jamais committer de secrets](#ne-jamais-committer-de-secrets)  
-- [Installation & lancement (Docker Compose)](#installation--lancement-docker-compose)  
-- [Réinitialiser la base de données](#réinitialiser-la-base-de-données)  
-- [Flags pédagogiques](#flags-pédagogiques)  
-- [Payloads d’exemple (TP)](#payloads-dexemple-tp)  
-- [XXE via SVG (double-extension)](#xxe-via-svg-double-extension)  
-- [Fix / mitigation (branch `fixed`)](#fix--mitigation-branch-fixed)  
-- [Debug & tips](#debug--tips)  
-- [Règles d’usage du labo](#règles-dusage-du-labo)  
-- [Fichiers utiles à ajouter au dépôt](#fichiers-utiles-à-ajouter-au-dépôt)  
-- [Étapes optionnelles pour l’enseignant](#étapes-optionnelles-pour-lenseignant)
-
----
-
-## But du projet
-
-`Chop Shop` est une application e-commerce pédagogique conçue pour permettre l’apprentissage pratique des vulnérabilités web courantes et de leurs correctifs :
-
-- **SQL Injection** (barre de recherche)  
-- **Stored XSS** (commentaires)  
-- **XXE** via parsing de SVG/XML uploadés
-
-L’objectif : exploiter les failles dans un labo local, comprendre l’impact, puis corriger et comparer.
-
----
+- Listing de produits & page produit détaillée.  
+- Système de commentaires par produit.  
+- Upload d'images dans les commentaires.  
+- Gestion simple des utilisateurs et des rôles (`user`, `admin`).  
+- Dashboard admin (visuel / démonstration — pas d’actions sensibles en prod).  
+- Mécanismes pédagogiques pour détecter les failles (flag).
 
 ## Structure du dépôt
 
+```
+.
+├── docker-compose.yml
+├── db/
+│   └── init.sql
+├── web/
+│   └── vuln-app/
+│       ├── index.php
+│       ├── product.php
+│       ├── post_comment.php
+│       ├── db.php
+│       ├── admin_dashboard.php
+│       ├── dashboard.php
+│       ├── login.php
+│       ├── logout.php
+│       ├── profile.php
+│       ├── register.php
+│       ├── session.php
+│       ├── styles.css
+│       └── uploads/ (généré)
+└── .env.example
+```
+## Installation & lancement 
+Cloner le projet et accéder au dépot
+```bash
+  git clone https://github.com/Goustan-Sermon/vul_commerce_app.git
+  cd vul_commerce_app
+```
+
+Copier .env.example dans .env 
+```bash
+  cp .env.example .env
+  # modifier .env si besoin
+```
+Démmarer les services
+```bash
+ docker compose up -d --build
+```
+On accède alors à la page web `http://localhost:8080`
+
+**Attention**
+Le service sur le port 8081 dépasse le champ du projet, aucune vulnérabilités n'est a trouver la bas. Tout se passe sur la page web uniquement.
+
+Si tu utilises WSL2 sur Windows ou une VM Linux, assure-toi que le daemon Docker est accessible depuis ton shell (Exemple pour Windows : s'assurer que docker desktop est en marche).
+
+## Réinitialiser la base de données
+
+Les scripts db/init.sql ne sont exécutés QUE au premier démarrage si le volume de données est vide. Pour forcer la réinitialisation :
+
+```bash
+docker compose down -v        # supprime le volume de données
+docker compose up -d --build  # recrée tout et exécute init.sql
+```
+Alternative manuel (via phpmyadmin `localhost:8081`) : supprimer la base vulnshop puis réimporter db/init.sql
