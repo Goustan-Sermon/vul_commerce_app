@@ -94,7 +94,7 @@ $comsRes = $mysqli->query("SELECT * FROM comments WHERE product_id = " . intval(
         <textarea name="content" placeholder="Ajouter un commentaire..." rows="4" style="padding:10px; border-radius:8px; border:1px solid #ddd; resize:vertical; max-width:100%;"></textarea>
 
         <label style="font-size:0.9rem; color:#666;">Photo (optionnel) :</label>
-        <input type="file" name="photo" accept="image/*, .xml" style="max-width:320px;">
+        <input type="file" name="photo" accept="image/*" style="max-width:320px;">
         
         <div style="display:flex; gap:10px; align-items:center;">
           <button type="submit" style="background:#8b5e3c; color:#fff; border:none; padding:10px 18px; border-radius:30px; font-weight:700; cursor:pointer;">Envoyer</button>
@@ -110,3 +110,4 @@ $comsRes = $mysqli->query("SELECT * FROM comments WHERE product_id = " . intval(
 </footer>
 </body>
 </html>
+
