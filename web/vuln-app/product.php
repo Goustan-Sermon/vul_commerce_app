@@ -95,6 +95,7 @@ $comsRes = $mysqli->query("SELECT * FROM comments WHERE product_id = " . intval(
 
         <label style="font-size:0.9rem; color:#666;">Photo (optionnel) :</label>
         <input type="file" name="photo" accept="image/*" style="max-width:320px;">
+        <label style="font-size:0.6rem; color:#666; font-style:italic;">Format autorisé : jpeg, png, svg</label>
         
         <div style="display:flex; gap:10px; align-items:center;">
           <button type="submit" style="background:#8b5e3c; color:#fff; border:none; padding:10px 18px; border-radius:30px; font-weight:700; cursor:pointer;">Envoyer</button>
@@ -110,4 +111,5 @@ $comsRes = $mysqli->query("SELECT * FROM comments WHERE product_id = " . intval(
 </footer>
 </body>
 </html>
+
 
