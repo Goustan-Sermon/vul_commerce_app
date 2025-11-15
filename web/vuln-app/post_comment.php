@@ -1,7 +1,4 @@
 <?php
-// post_comment.php (vulnérable volontairement pour le labo)
-// Remplace ton fichier actuel par celui-ci.
-// REQUIRE: db.php définit $mysqli
 
 require 'db.php';
 
@@ -51,15 +48,9 @@ if (isset($_FILES['photo']) && $_FILES['photo']['error'] !== UPLOAD_ERR_NO_FILE)
                 if ($mime === 'image/svg+xml') {
                     // lire le contenu
                     $xml = file_get_contents($targetPath);
-
-                    // IMPORTANT: ne PAS appeler libxml_disable_entity_loader() (dépréciée)
-                    // Pour éviter que libxml émette des warnings dans la sortie, on capture les erreurs en mémoire :
                     libxml_use_internal_errors(true);
 
                     $doc = new DOMDocument();
-
-                    // VULN : ces flags provoquent l'expansion des entités externes (XXE)
-                    // LIBXML_DTDLOAD charge le DTD, LIBXML_NOENT remplace les entités par leur contenu
                     $loaded = $doc->loadXML($xml, LIBXML_NOENT | LIBXML_DTDLOAD);
 
                     // collecter les erreurs si besoin et logger, sans les afficher
@@ -88,7 +79,7 @@ if (isset($_FILES['photo']) && $_FILES['photo']['error'] !== UPLOAD_ERR_NO_FILE)
     }
 }
 
-// Préparer et insérer en base (on garde le comportement pédagogique : contenu peut contenir HTML/XML)
+// Préparer et insérer en base
 $authorEsc = $mysqli->real_escape_string($author);
 $contentEsc = $mysqli->real_escape_string($content);
 
@@ -103,6 +94,6 @@ if (!$mysqli->query($sql)) {
     error_log("DB INSERT ERROR: " . $mysqli->error . " -- SQL: " . $sql);
 }
 
-// Pas d'output ici — redirection propre
 header("Location: product.php?id=" . $product_id);
 exit;
+
